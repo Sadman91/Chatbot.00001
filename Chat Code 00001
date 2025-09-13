@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 480px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background-color: white;
+        }
+        .chat-header {
+            background-color: #3b82f6;
+            color: white;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .chat-body {
+            flex-grow: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .chat-message {
+            max-width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 1.5rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .bot-message {
+            background-color: #3b82f6;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.5rem;
+        }
+        .chat-input-area {
+            display: flex;
+            padding: 1rem 1.5rem;
+            background-color: #f3f4f6;
+            border-top: 1px solid #e5e7eb;
+            gap: 0.5rem;
+        }
+        #chat-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid #d1d5db;
+            outline: none;
+        }
+        #send-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #10b981;
+            color: white;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #send-button:hover {
+            background-color: #059669;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            Simple Chatbot
+        </div>
+        <div class="chat-body" id="chat-body">
+            <!-- Initial bot message -->
+            <div class="chat-message bot-message">Hello! How can I help you today? Try typing "hello", "how are you", or "what is your name?".</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const chatBody = document.getElementById('chat-body');
+
+        // Simple pre-programmed bot responses
+        const responses = {
+            'hello': 'Hi there! What can I do for you?',
+            'how are you': 'I am an AI, so I don\'t have feelings, but I\'m functioning perfectly! Thanks for asking.',
+            'what is your name': 'I don\'t have a name. I am a helpful assistant created to answer your questions.',
+            'default': 'Sorry, I don\'t understand that. Please try one of the following: "hello", "how are you", or "what is your name?".'
+        };
+
+        // Function to display a message in the chat window
+        function displayMessage(message, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', sender === 'user' ? 'user-message' : 'bot-message');
+            messageElement.textContent = message;
+            chatBody.appendChild(messageElement);
+            // Scroll to the bottom of the chat body
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Function to handle sending a message
+        function sendMessage() {
+            const userMessage = chatInput.value.trim();
+            if (userMessage === '') {
+                return;
+            }
+
+            // Display user message
+            displayMessage(userMessage, 'user');
+            chatInput.value = '';
+
+            // Get bot response after a short delay
+            setTimeout(() => {
+                const normalizedMessage = userMessage.toLowerCase().replace(/[^\w\s]/g, '');
+                const botResponse = responses[normalizedMessage] || responses['default'];
+                displayMessage(botResponse, 'bot');
+            }, 500);
+        }
+
+        // Event listener for the send button
+        sendButton.addEventListener('click', sendMessage);
+
+        // Event listener for the Enter key in the input field
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+    </script>
+
+</body>
+</html>
+
